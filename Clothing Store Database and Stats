@@ -1,0 +1,37 @@
+--Create a Department Store database
+CREATE TABLE department_store (id INTEGER PRIMARY KEY, item TEXT, price INTEGER, section TEXT, popularity INTEGER);
+
+INSERT INTO department_store VALUES (1, "Purple Dress", 35.50, "Womens", 78);
+INSERT INTO department_store VALUES (2, "Cargo Pants", 22.99, "Mens", 88);
+INSERT INTO department_store VALUES (3, "Polka-Dot Dress", 18.99, "Kids", 76);
+INSERT INTO department_store VALUES (4, "Basic Tee", 10.99, "Womens", 70);
+INSERT INTO department_store VALUES (5, "Leather Purse", 30, "Accessories", 65);
+INSERT INTO department_store VALUES (6, "Gold Earrings", 8.99, "Accessories", 72);
+INSERT INTO department_store VALUES (7, "Blue Blouse", 23.50, "Womens", 49);
+INSERT INTO department_store VALUES (8, "Leather Skirt", 30.99, "Womens", 90);
+INSERT INTO department_store VALUES (9, "Black Slacks", 34.99, "Mens", 89);
+INSERT INTO department_store VALUES (10, "White Dress Shirt", 15.99, "Mens", 80);
+INSERT INTO department_store VALUES (11, "Overalls", 12.99, "Kids", 68);
+INSERT INTO department_store VALUES (12, "Jean Shorts", 10.99, "Kids", 88);
+INSERT INTO department_store VALUES (13, "Sweatshirt", 24, "Mens", 73);
+INSERT INTO department_store VALUES (14, "Necklace", 7.99, "Accessories", 74);
+INSERT INTO department_store VALUES (15, "Leggings", 10.99, "Womens", 93);
+
+--Display the database ordered by price
+SELECT * FROM department_store 
+ORDER BY price;
+
+--Display the average price in the Women's section
+SELECT AVG(price) AS "Average Price in Womens" FROM department_store
+WHERE section="Womens";
+
+--Top 5 popular items
+SELECT item, price, section, popularity FROM department_store
+ORDER BY popularity DESC
+LIMIT 5;
+
+--What is the average poppularity by section rated from most to least popular? (rounded to the second decimal)
+SELECT section, ROUND(AVG(popularity),2) AS "Average Popularity" FROM department_store
+GROUP BY section
+ORDER BY "Average Popularity" DESC;
+
