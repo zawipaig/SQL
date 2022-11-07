@@ -131,7 +131,7 @@ GROUP BY country
 HAVING "NUmber of Sales" >1
 ORDER BY COUNT(country) DESC;
 
---Display which country hit sale goal. Less than 4599 is Below Goal, 4600-11999 is Met Goal, 12000+ is Above Goal
+--Looking at the total sales for each country, list which country has hit the sale goal or not. Less than 4599 is Below Goal, 4600-11999 is Met Goal, 12000+ is Above Goal
 SELECT country,
     CASE
         WHEN SUM(price) > 12000 THEN "Above Goal"
