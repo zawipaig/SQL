@@ -1,0 +1,88 @@
+--Create table with a list of actors and the movie/show they have been in
+CREATE TABLE movie_stars (id INTEGER PRIMARY KEY, 
+    actor_id INTEGER,
+    name TEXT,
+    movie TEXT,
+    age INTEGER);
+
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (1, "Tom Holland", "Spiderman", 25);
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (2, "Zendaya", "Euphoria", 24);
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (3, "Scarlett Johansson", "Avengers", 37);
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (4, "Robert Downey Jr", "Iron Man", 57);
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (5, "Mila Kunis", "Black Swan", 39);
+INSERT INTO movie_stars (actor_id, name, movie, age)
+    VALUES (6, "Ashton Kutcher", "Jobs", 44);
+
+--Create table with actors that are dating/married based on their id
+CREATE TABLE dating (id INTEGER PRIMARY KEY,
+    partner1_id INTEGER,
+    partner2_id INTEGER,
+    duration TEXT);
+    
+INSERT INTO dating (partner1_id, partner2_id, duration)
+    VALUES (1, 2, "Two Years");
+INSERT INTO dating (partner1_id, partner2_id, duration)
+    VALUES (5, 6, "Five Years");
+
+--Create table with actor and what country they are from
+CREATE TABLE location (id INTEGER PRIMARY KEY,
+    actor_id INTEGER,
+    country TEXT);
+    
+INSERT INTO location (actor_id, country)
+    VALUES (1, "England");
+Insert INTO location (actor_id, country)
+    VALUES (2, "USA");
+INSERT INTO location (actor_id, country)
+    VALUES (3, "USA");
+Insert INTO location (actor_id, country)
+    VALUES (4, "USA");
+INSERT INTO location (actor_id, country)
+    VALUES (5, "Ukraine");
+Insert INTO location (actor_id, country)
+    VALUES (6, "USA");    
+
+--Create table with movie name and their popularity rating
+CREATE TABLE movie_popularity
+    (id INTEGER PRIMARY KEY,
+    movie TEXT,
+    popularity_rating INTEGER);
+    
+INSERT INTO movie_popularity (movie, popularity_rating)
+    VALUES ("Spiderman", 91);
+INSERT INTO movie_popularity (movie, popularity_rating)
+    VALUES ("Iron Man", 82);
+INSERT INTO movie_popularity (movie, popularity_rating)
+    VALUES ("Avengers", 88);
+INSERT INTO movie_popularity (movie, popularity_rating)
+    VALUES ("The Conjuring", 85);
+
+--List which actor is dating/married to whom
+SELECT a.name AS "partner 1", b.name AS "partner 2" FROM dating
+    JOIN movie_stars a
+    ON dating.partner1_id = a.id
+    JOIN movie_stars b
+    ON dating.partner2_id = b.id;
+
+--List actor and where they are from 
+SELECT movie_stars.name AS name, location.country FROM location
+    JOIN movie_stars
+    ON location.actor_id = movie_stars.id;
+ 
+--How many actors are from each country? 
+SELECT location.country, COUNT(location.country) FROM location
+    JOIN movie_stars
+    ON location.actor_id = movie_stars.id
+GROUP BY location.country;
+ 
+--Show each movie and their popularity by most to least. Include the name of the actor in the movie if applicable. 
+SELECT movie_popularity.movie, movie_popularity.popularity_rating, movie_stars.name AS lead_actor FROM movie_popularity
+    LEFT OUTER JOIN movie_stars
+    ON movie_popularity.movie=movie_stars.movie
+ORDER BY movie_popularity.popularity_rating DESC;
+    
