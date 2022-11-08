@@ -1,0 +1,64 @@
+--Downloaded data from Kaggle
+--Created a table to insert data into SQL
+--Performed analytics on the data
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness text NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL 
+);
+
+/*List the top 10 popular songs and artist*/
+SELECT track_name, artist_name, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY popularity DESC
+LIMIT 10;
+
+/*List the top 10 artists by average popularity and average danceability(rank by avg popularity first than by average danceability*/
+SELECT artist_name, ROUND(AVG(popularity),2) AvgPop, ROUND(AVG(danceability),2) AvgDance
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY AvgPop DESC, AvgDance DESC
+LIMIT 10;
+
+/*List the average popularity and danceability of all songs by Bad Bunny*/
+SELECT COUNT(artist_name), AVG(popularity), AVG(danceability)
+FROM BIT_DB.Spotifydata
+WHERE artist_name='Bad Bunny';
+
+/*What are the top 10 artists with the loudest average songs*/
+SELECT artist_name, AVG(loudness)
+FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY AVG(loudness) DESC
+LIMIT 10;
+
+/*List out each song by its energy level. 
+(0.75 and up is High Energy, 0.50-0.74 Moderate Energy, Less than 0.50 low energy.
+Ordered by highest to lowest and in alphabetical order by artist)*/
+SELECT artist_name, track_name,
+    CASE
+        WHEN energy>=0.75 THEN 'High Energy'
+        WHEN energy>=0.50 THEN 'Moderate Energy'
+        ELSE'Low Energy'
+    END as 'Energy_Level'
+FROM BIT_DB.Spotifydata
+ORDER BY Energy_Level='High Energy' DESC,
+    Energy_Level='Moderate Energy'DESC,
+    Energy_Level='low Energy'DESC,
+    artist_name ASC;
