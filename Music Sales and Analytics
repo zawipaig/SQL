@@ -1,3 +1,5 @@
+--In this SQL, I am querying a database with multiple tables to analyze customer, order, and employee informaiton
+
 /*Show Customers (their full names, customer ID, and country) who are not in the US*/
 SELECT FirstName, LastName, CustomerID, Country
 FROM chinook.customers
