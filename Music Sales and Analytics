@@ -1,0 +1,109 @@
+/*Show Customers (their full names, customer ID, and country) who are not in the US*/
+SELECT FirstName, LastName, CustomerID, Country
+FROM chinook.customers
+WHERE Country != 'USA';
+
+/*Show only the Customers from Brazil.*/
+SELECT * 
+FROM chinook.customers
+WHERE Country='Brazil';
+
+/*Find the Invoices of customers who are from Brazil. 
+The resulting table should show the customer's full name, Invoice ID, Date of the invoice, and billing country.*/
+SELECT FirstName, LastName, InvoiceID, InvoiceDate, BillingCountry
+FROM chinook.invoices invoice
+JOIN chinook.customers cust
+ON invoice.CustomerID=cust.CustomerID
+WHERE BillingCountry = 'Brazil';
+
+/*Show the Employees who are Sales Agents.*/
+SELECT FirstName, LastName, Title
+FROM chinook.employees
+WHERE Title='Sales Support Agent';
+
+/*Find a unique/distinct list of billing countries from the Invoice table.*/
+SELECT DISTINCT BillingCountry
+FROM chinook.invoices;
+
+/*Provide a query that shows the invoices associated with each sales agent. 
+The resulting table should include the Sales Agent's full name.*/
+SELECT emp.FirstName, emp.LastName, inv.InvoiceID
+FROM chinook.customers cust
+JOIN chinook.employees emp
+ON cust.SupportRepID=emp.EmployeeID
+JOIN chinook.invoices inv
+ON cust.CustomerID=inv.CustomerID;
+
+/*Show the Invoice Total, Customer name, Country, and Sales Agent name for all invoices and customers.*/
+SELECT cust.FirstName, cust.LastName, cust.Country, emp.FirstName AgentFirstName, emp.LastName AgentLastName, inv.Total
+FROM chinook.customers cust
+JOIN chinook.employees emp
+ON cust.SupportRepID=emp.EmployeeID
+JOIN chinook.invoices inv
+ON cust.CustomerID=inv.CustomerID;
+
+/*What are the total sales for 2009?*/
+SELECT SUM(Total)
+FROM chinook.invoices
+WHERE InvoiceDate LIKE '2009%';
+
+/*Write a query that includes the purchased track name with each invoice line ID.*/
+SELECT BillingCity, BillingCountry, ROUND(SUM(Total),2) Total
+FROM chinook.invoices
+GROUP BY BillingCity
+ORDER BY Total DESC;
+
+/*Show the total sales per sales rep along with their full name, id, and the number of orders they made*/
+SELECT employee.FirstName, employee.LastName, SupportRepID, COUNT(SupportRepID) AS '#of Orders', ROUND(SUM(invoice.total),2) AS TotalPerRep
+FROM chinook.customers cust
+JOIN chinook.employees employee
+ON cust.SupportRepID=employee.EmployeeID
+JOIN chinook.invoices invoice
+ON cust.CustomerID=invoice.CustomerID
+GROUP BY SupportRepID;
+
+/*Show the top 10 countries with the highest sales*/
+SELECT BillingCountry, ROUND(SUM(Total),2) Total
+FROM chinook.invoices
+GROUP BY BillingCountry
+ORDER BY Total DESC
+LIMIT 10;
+
+/*Show all the track names sorted by how many of each track were sold and the total sales per track*/
+SELECT track.Name, SUM(Quantity) Quantity, SUM(item.UnitPrice) Total
+FROM chinook.invoice_items item
+JOIN chinook.tracks track
+ON item.TrackID=track.TrackID
+GROUP BY track.Name
+ORDER BY Total DESC;
+
+/*Write a query that includes the purchased track name AND artist name with each invoice line ID.*/
+SELECT track.Name Track, art.Name Artist, item.InvoiceID
+FROM chinook.invoice_items item
+LEFT JOIN chinook.tracks track
+ON item.TrackID=track.TrackID
+INNER JOIN chinook.albums alb
+ON track.AlbumId=alb.AlbumID
+LEFT JOIN chinook.artists art
+ON alb.ArtistId=art.ArtistID;
+
+/*Provide a query that shows all the Tracks, and include the Album name, Media type, and Genre*/
+SELECT t.Name AS 'Track Name', a.Title AS 'Album Name', m.Name AS 'Mediay type', g.Name AS 'Genre'
+FROM chinook.tracks t
+JOIN chinook.albums a
+ON t.AlbumId=a.AlbumId
+JOIN chinook.media_types m
+ON t.MediaTypeId=m.MediaTypeId
+JOIN chinook.genres g
+ON t.GenreId=g.GenreId;
+
+/*Which sales agent made the most dollars in sales in 2009?*/
+SELECT e.FirstName, e.LastName, ROUND(SUM(i.total),2) AS Total
+FROM chinook.invoices i
+JOIN chinook.customers c
+ON i.CustomerID=c.CustomerID
+JOIN chinook.employees e
+ON c.SupportRepID=e.EmployeeID
+WHERE InvoiceDate LIKE '2009%' AND Title='Sales Support Agent'
+GROUP BY c.SupportRepID
+ORDER BY Total DESC LIMIT 1;
